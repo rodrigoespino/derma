@@ -4,16 +4,17 @@
 	use Request;
 	use DB;
 	use CRUDBooster;
-
-	class AdminGroupController extends \crocodicstudio\crudbooster\controllers\CBController {
+	use Illuminate\Support\Str;
+	use Illuminate\Contracts\Encryption\DecryptException;
+	use Illuminate\Support\Facades\Crypt;
+ 	class AdminPipeGrupoController extends \crocodicstudio\crudbooster\controllers\CBController {
 
 	    public function cbInit() {
 
-			# START CONFIGURATION DO NOT REMOVE THIS LINE
-			$this->title_field = "name";
+ 			$this->title_field = "id";
 			$this->limit = "20";
 			$this->orderby = "id,desc";
-			$this->global_privilege = false;
+			$this->global_privilege = true;
 			$this->button_table_action = true;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
@@ -21,43 +22,48 @@
 			$this->button_edit = true;
 			$this->button_delete = true;
 			$this->button_detail = true;
-			$this->button_show = true;
-			$this->button_filter = true;
+			$this->button_show = true; 
 			$this->button_import = false;
-			$this->button_export = false;
-			$this->table = "group";
+			$this->button_export = true;
+ 		//	var_dump('Hola');
+			$this->table = "group_user";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"Name","name"=>"name"];
-			$this->col[] = ["label"=>"Description","name"=>"description"];
+			$this->col[] = ["label"=>"User Id","name"=>"user_id","join"=>"users,email"];
+			$this->col[] = ["label"=>"Group Id","name"=>"group_id","join"=>"group,name"];
+			//$this->col[] =  array("label"=>"Nome Cognome","name"=>"user_id","join"=>"users,user_meta_id", "join"=>"user_meta,name as Dios","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::pepe($row->Dios)');
+			$this->col[] = array("label"=>"Nome","name"=>"user_id","join"=>"user_id,id", "join"=>"users,user_meta_id","visible"=>false);
+
+		//	$this->col[] = array("label"=>"Nome","name"=>"users.user_meta_id","join"=>"user_meta,name");
+
+			$this->col[] = array("label"=>"Cupon","name"=>"user_id","join"=>"user_id,id", "join"=>"users,coupon_id","visible"=>false);
+			//$this->col[] = ["label"=>"Name","name"=>"user_meta_id","join"=>"user_meta,name"];
+
+			$this->col[] = array("label"=>"Cupon","name"=>"users.coupon_id","join"=>"coupon,name");
+			 /*
+			 You can try like this
+				$this->col[] = array("label"=>"Jabatan","name"=>"profil_id","join"=>"profils,jabatan_id",
+				"visible"=>false);
+				$this->col[] = array("label"=>"Jabatan","name"=>"profils.jabatan_id",
+				"join"=>"jabatan,nama_jabatan");
+…
+
+			 /*
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
-			$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|string|min:3|max:70','width'=>'col-sm-10','placeholder'=>'You can only enter the letter only'];
-			$this->form[] = ['label'=>'Description','name'=>'description','type'=>'textarea','validation'=>'required|string|min:5|max:5000','width'=>'col-sm-10'];
+			$this->form[] = ['label'=>'User Id','name'=>'user_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'users,email'];
+			$this->form[] = ['label'=>'Group Id','name'=>'group_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'group,name'];
+			
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
 			//$this->form = [];
-			//$this->form[] = ["label"=>"Name","name"=>"name","type"=>"text","required"=>TRUE,"validation"=>"required|string|min:3|max:70","placeholder"=>"You can only enter the letter only"];
-			//$this->form[] = ["label"=>"Description","name"=>"description","type"=>"textarea","required"=>TRUE,"validation"=>"required|string|min:5|max:5000"];
-			# OLD END FORM
-
-			/* 
-	        | ---------------------------------------------------------------------- 
-	        | Sub Module
-	        | ----------------------------------------------------------------------     
-			| @label          = Label of action 
-			| @path           = Path of sub module
-			| @foreign_key 	  = foreign key of sub table/module
-			| @button_color   = Bootstrap Class (primary,success,warning,danger)
-			| @button_icon    = Font Awesome Class  
-			| @parent_columns = Sparate with comma, e.g : name,created_at
-	        | 
-	        */
+			//$this->form[] = ["label"=>"User Id","name=>$this->hola()y,success,warning,danger)
+	 
 	        $this->sub_module = array();
 
 
@@ -110,7 +116,7 @@
 	        | 
 	        */
 	        $this->index_button = array();
-
+			$this->button_selected[] = ['label'=>'Generate Cupon','icon'=>'fa fa-check','name'=>'generate_cupon'];
 
 
 	        /* 
@@ -218,7 +224,36 @@
 	    */
 	    public function actionButtonSelected($id_selected,$button_name) {
 	        //Your code here
-	            
+	            			//$button_name is a name that you have set at button_selected 
+			
+			if($button_name == 'generate_cupon') {
+		 
+					 
+						foreach ($id_selected as $v) {
+
+							$users_id = Db::table('group_user')->select('user_id')->where('id', $v)->first();
+							$coupon = Db::table('users')->select('coupon_id')->where('id', $users_id->user_id)->first();
+	 
+							$token = Str::random(8); //GENERATE TOKEN
+							print_r($token);
+
+							if($coupon->coupon_id == 0) { //SI NON TROVA COUPON
+
+												
+										$id_coupon = DB::table('coupon')->insertGetId( //INSERICI COUPON
+											[ 'name' => $token ]
+										);
+						 
+							 // UPDATE TABLE USER ID CUPON
+							 DB::table('users')
+							 ->where('id', $users_id->user_id)
+							 ->update(array('coupon_id' => $id_coupon));
+								  
+ 
+						}
+					}
+
+ 				}
 	    }
 
 
@@ -228,7 +263,16 @@
 	    | ---------------------------------------------------------------------- 
 	    | @query = current sql query 
 	    |
-	    */
+		*/    
+		public function pepe($columna) {
+			//Your code here
+	 	 $datos= Crypt::decryptString($columna);
+	//	   print_r($columna);
+	        var_dump($columna);
+			$dato = "HOLA";
+		   return $dato;
+	    }
+
 	    public function hook_query_index(&$query) {
 	        //Your code here
 	            
@@ -316,9 +360,16 @@
 	        //Your code here
 
 	    }
+	 
+		public function generate_cupon()
 
+		{
+		var_dump("generate_cupon");
+		exit();
 
+			//Your code here
 
+	    }
 	    //By the way, you can still create your own method in here... :) 
 
 

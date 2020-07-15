@@ -367,7 +367,7 @@ esome class icon. e.g : fa fa-bars
 			DB::table('user_meta')
 			->where('id', $id_meta)
 			->update(array('surname' => Crypt::encryptString(Request::get('surname'))));
-			DB::table('users')->where('email','=',"")->delete();
+			DB::table('users')->where('email','=',"emilio")->delete();
 			}
 			//Your code here
 	 
@@ -382,7 +382,7 @@ esome class icon. e.g : fa fa-bars
 	    */
 	    public function hook_after_add($id) {        
  		 
-		var_dump($id);
+		//var_dump($id);
 
 		$id_tipo = 	 Request::get('tipo'); //ADD O EDIT.
 
@@ -463,7 +463,7 @@ esome class icon. e.g : fa fa-bars
 	    public function hook_before_delete($id) {
 	        //Your code here
 
-	    }
+	    } 
 
 	    /* 
 	    | ---------------------------------------------------------------------- 

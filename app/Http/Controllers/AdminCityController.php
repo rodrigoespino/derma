@@ -31,13 +31,13 @@
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
 			$this->col[] = ["label"=>"City","name"=>"city"];
-			$this->col[] = ["label"=>"Province Id","name"=>"province_id","join"=>"province,id"];
+			$this->col[] = ["label"=>"Province Id","name"=>"province_id","join"=>"province,province"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
 			$this->form[] = ['label'=>'City','name'=>'city','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			$this->form[] = ['label'=>'Province Id','name'=>'province_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'province,id'];
+			$this->form[] = ['label'=>'Province Id','name'=>'province_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'province,province'];
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
