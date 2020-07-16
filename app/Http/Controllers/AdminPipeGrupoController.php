@@ -25,24 +25,23 @@
 			$this->button_show = true; 
 			$this->button_import = false;
 			$this->button_export = true;
- 		//	var_dump('Hola');
-			$this->table = "group_user";
+ 			$this->table = "group_user";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
-
+ 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
 			$this->col[] = ["label"=>"User Id","name"=>"user_id","join"=>"users,email"];
 			$this->col[] = ["label"=>"Group Id","name"=>"group_id","join"=>"group,name"];
 			//$this->col[] =  array("label"=>"Nome Cognome","name"=>"user_id","join"=>"users,user_meta_id", "join"=>"user_meta,name as Dios","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::pepe($row->Dios)');
-			$this->col[] = array("label"=>"Nome","name"=>"user_id","join"=>"user_id,id", "join"=>"users,user_meta_id","visible"=>false);
-
-		//	$this->col[] = array("label"=>"Nome","name"=>"users.user_meta_id","join"=>"user_meta,name");
-
+     	 
 			$this->col[] = array("label"=>"Cupon","name"=>"user_id","join"=>"user_id,id", "join"=>"users,coupon_id","visible"=>false);
-			//$this->col[] = ["label"=>"Name","name"=>"user_meta_id","join"=>"user_meta,name"];
-
 			$this->col[] = array("label"=>"Cupon","name"=>"users.coupon_id","join"=>"coupon,name");
-			 /*
+			
+			$this->form = [];
+			$this->form[] = ['label'=>'User Id','name'=>'user_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'users,email'];
+			$this->form[] = ['label'=>'Group Id','name'=>'group_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'group,name'];
+			
+			/*
 			 You can try like this
 				$this->col[] = array("label"=>"Jabatan","name"=>"profil_id","join"=>"profils,jabatan_id",
 				"visible"=>false);
@@ -115,7 +114,11 @@
 	        | @icon  = Icon from Awesome.
 	        | 
 	        */
-	        $this->index_button = array();
+			$this->index_button = array();
+	//		$this->index_button[] = ['label'=>'Add Masive Data',"icon"=>"fa fa-print",'name'=>'pepe'];
+
+			$this->index_button[] = ['label'=>'Add Masive Data','url'=>CRUDBooster::mainpath("print"),"icon"=>"fa fa-print"];
+
 			$this->button_selected[] = ['label'=>'Generate Cupon','icon'=>'fa fa-check','name'=>'generate_cupon'];
 
 
@@ -235,16 +238,18 @@
 							$coupon = Db::table('users')->select('coupon_id')->where('id', $users_id->user_id)->first();
 	 
 							$token = Str::random(8); //GENERATE TOKEN
-							print_r($token);
+							//print_r($token);
 
 							if($coupon->coupon_id == 0) { //SI NON TROVA COUPON
 
-												
-										$id_coupon = DB::table('coupon')->insertGetId( //INSERICI COUPON
+											$dato ['coupon'] = $coupon;					
+											$id_coupon = DB::table('coupon')->insertGetId( //INSERICI COUPON
 											[ 'name' => $token ]
 										);
-						 
-							 // UPDATE TABLE USER ID CUPON
+										CRUDBooster::sendEmail(['to'=>$users_id->email,'data'=>$dato,'template'=>'coupon','attachments'=>[]]);
+									 		
+			
+										// UPDATE TABLE USER ID CUPON
 							 DB::table('users')
 							 ->where('id', $users_id->user_id)
 							 ->update(array('coupon_id' => $id_coupon));
@@ -265,13 +270,9 @@
 	    |
 		*/    
 		public function pepe($columna) {
-			//Your code here
-	 	 $datos= Crypt::decryptString($columna);
-	//	   print_r($columna);
-	        var_dump($columna);
-			$dato = "HOLA";
-		   return $dato;
-	    }
+		 
+			exit();
+ 	    }
 
 	    public function hook_query_index(&$query) {
 	        //Your code here
