@@ -11,6 +11,10 @@ use Illuminate\Support\Collection;
 
 
 use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
+
+
 use Session;
 use DB;
 use CRUDBooster;
@@ -41,12 +45,25 @@ class data   extends Controller
 
                             foreach($datos as $indice=>$value){
                                 $codigo=$value["codigo"];
-                                $campo2=$value["campo2"];
+                                $campo2=Crypt::encryptString($value["campo2"]);
                                 $campo3=$value["campo3"];
-                                var_dump("Nome".$codigo); // Nome 
-                                var_dump("Cognome".$campo2); 
+                             //   var_dump("Nome".$codigo); // Nome 
+                               // var_dump("Cognome".$campo2); 
 
-                                var_dump("Email".$campo3);
+ 
+                               $id_coupon = DB::table('coupon')->insertGetId(
+                                [ 'name' => Request::get('coupon') ]
+                                 );
+                               
+                                 $id_user_meta = DB::table('user_meta')->insertGetId([
+                                'name'=> Crypt::encryptString(Request::get('name')),
+                               'surname'=>  Crypt::encryptString(Request::get('surname'))
+                         
+                           ]);
+                                var_dump($campo2);
+                                    
+
+                                
                             }
                                 exit();
                      
