@@ -38,8 +38,10 @@
 				$this->col = [];
 				$this->col[] = ["label"=>"Username","name"=>"username"];
 				$this->col[] = ["label"=>"Email","name"=>"email"];
-				$this->col[] = ["label"=>"Category Id","name"=>"category_id","join"=>"category,name"];
-		//		$this->col[] = ["label"=>"User Meta Id","name"=>"user_meta_id","join"=>"user_meta,name"];
+		 	$this->col[] = ["label"=>"Category Id","name"=>"category_id","join"=>"category,name"];
+				// $this->col[] = ["label"=>"Category Id","name"=>"category_id"];
+ 
+				$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_meta_id","callback_php"=>'App\Http\Controllers\AdminUser28Controller::convert_name_surname($row->user_meta_id)'];
 				$this->col[] = ["label"=>"Coupon Id","name"=>"coupon_id","join"=>"coupon,name"];
 		//		$this->col[] = ["label"=>"Api Token","name"=>"api_token"];
 				# END COLUMNS DO NOT REMOVE THIS LINE
@@ -324,7 +326,7 @@ esome class icon. e.g : fa fa-bars
 			//FILTER BY CATEGORY_ID //DERNATOLOGY
 			DB::table('users')->where('email','=',"")->delete();
 
-			$query->where('category_id',1);
+		$query->where('category_id','=',1);
 
 	    }
 
@@ -476,10 +478,46 @@ esome class icon. e.g : fa fa-bars
 	        //Your code here
 
 	    }
+		
+	    public function convert_name_surname($linea)
+
+		{
 
 
-
-	    //By the way, you can still create your own method in here... :) 
-
+			//$new_linea = $linea . "Hola";
+			$name_en = DB::table('user_meta')->where('id', $linea)->pluck('name');	
+			$surname_en = DB::table('user_meta')->where('id', $linea)->pluck('surname');	
+		//	var_dump($name_en);
 	 
+			 
+		//	exit();
+		if (empty($name_en[0]))
+		{
+			$new_name = "";
+			$new_surname = "" ;
+		//	var_dump("Si");
+			$url = "Not found";
+	    } else {
+			$new_name = Crypt::decryptString($name_en);
+			$new_surname = Crypt::decryptString($surname_en);
+			$new_linea = $new_name . ' ' . ucwords($new_surname);
+
+			$url = strtolower($new_linea);
+			//Reemplazamos caracteres especiales latinos
+			$find = array('á','é','í','ó','ú','â','ê','î','ô','û','ã','õ','ç','ñ');
+			$repl = array('a','e','i','o','u','a','e','i','o','u','a','o','c','n');
+			$url = str_replace($find, $repl, $url);
+			//Añadimos los guiones
+			$find = array(' ', '&', '\r\n', '\n','+');
+			$url = str_replace($find, '-', $url);
+			//Eliminamos y Reemplazamos los demas caracteres especiales
+			$find = array('/[^a-z0-9\-<>]/', '/[\-]+/', '/<{^>*>/');
+			$repl = array('', '-', '');
+			$url = ucwords(preg_replace($find, $repl, $url));
+		//	var_dump($url);
+		}
+		return $url;
+ 
 	}
+	
+}

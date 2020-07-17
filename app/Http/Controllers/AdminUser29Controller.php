@@ -43,7 +43,8 @@
 				$this->col[] = ["label"=>"Coupon Id","name"=>"coupon_id","join"=>"coupon,name"];
 		//		$this->col[] = ["label"=>"Api Token","name"=>"api_token"];
 				# END COLUMNS DO NOT REMOVE THIS LINE
-	
+				$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_meta_id","callback_php"=>'App\Http\Controllers\AdminUser28Controller::convert_name_surname($row->user_meta_id)'];
+
 				# START FORM DO NOT REMOVE THIS LINE
 				$this->form = [];
 				$this->form[] = ['label'=>'Username','name'=>'username','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];

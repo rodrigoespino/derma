@@ -16,6 +16,8 @@ Route::get('/', function () {
 });
 Route :: get ('/admin/pipe_grupo/print', function ()
 {
+    $data['category'] =  DB::table('category')->get();
+
     $data['group'] =  DB::table('group')->get();
 
     return view ('masive',$data);
@@ -23,7 +25,7 @@ Route :: get ('/admin/pipe_grupo/print', function ()
  
 Route :: get ('/static', function ()
 {
-
+    //// Statisticas     
     $derma_count = DB::table('users')->where('category_id','=',1)->count();
     $info_count = DB::table('users')->where('category_id','=',3)->count();
     $gruppi_count = DB::table('group')->count();

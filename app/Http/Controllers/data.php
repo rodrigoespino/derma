@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 
 use Session;
@@ -34,42 +35,77 @@ class data   extends Controller
           $fullarchivo = $directorio . $nombre ;
           $fullarchivo2 = substr($directorio,0,-1) .$directorio. $nombre ;
 
-            var_dump($fullarchivo2);
+           // var_dump($fullarchivo2);
              $grabado = \Storage::disk('local')->put($fullarchivo, $contenido);
         
- 
-            if ($grabado) {
+               // var_dump($data);
+               // var_dump($req->mail);
+               // var_dump($req->category_id);
+                $category = $req->category_id;
+                $grupo_id = $req->group_id;
+                $confirm_email = $req->mail;
+             //   var_dump($grupo_id);
+         //  exit();
+                
+                if ($grabado) {
                       $datos=  $this->readCSV($fullarchivo2 ,array('delimiter' => ','));
-             }
-
+                                } else {
+                                    CRUDBooster::redirectBack("The data has been updated!", "success");
+                                    exit();
+                            } 
 
                             foreach($datos as $indice=>$value){
-                                $codigo=$value["codigo"];
-                                $campo2=Crypt::encryptString($value["campo2"]);
-                                $campo3=$value["campo3"];
-                             //   var_dump("Nome".$codigo); // Nome 
-                               // var_dump("Cognome".$campo2); 
-
- 
-                               $id_coupon = DB::table('coupon')->insertGetId(
-                                [ 'name' => Request::get('coupon') ]
-                                 );
-                               
+                             //   $ver = Crypt::encryptString($value["codigo"]);
+                                $name=Crypt::encryptString($value["codigo"]); // Name
+                                $surname=Crypt::encryptString($value["campo2"]);  // Surname
+                                $email=$value["campo3"]; // Email
+  
+                                //// Usar la funcion para generar el token
+                               $token = Str::random(8); //GENERATE TOKEN
+                               /// Generate Cupon     $id_cupon                               
+                               if ($req->cupon == 1) {
+                                            $id_coupon = DB::table('coupon')->insertGetId(
+                                            [ 'name' => $token ]);
+                                         } else { 
+                                                $id_coupon = 0 ;
+                                            }
+                                 /// Carica Encrypt User Meta.
                                  $id_user_meta = DB::table('user_meta')->insertGetId([
-                                'name'=> Crypt::encryptString(Request::get('name')),
-                               'surname'=>  Crypt::encryptString(Request::get('surname'))
-                         
-                           ]);
-                                var_dump($campo2);
-                                    
+                                'name'=> $name,
+                                'surname'=>  $surname ]);
+                                // Add Users !
+                               // exit();
+                                $id_users = DB::table('users')->insertGetId([
+                                    'email'=> $email,
+                                    'category_id'=> $category,
+                                    'coupon_id'=> $id_coupon,
 
+                                    'user_meta_id'=>$id_user_meta ]);
+                                         
+                                // Add Grupo
                                 
-                            }
-                                exit();
-                     
-      
+                                $id_grupo = DB::table('group_user')->insertGetId([
+                                    'user_id'=> $id_users,
+                                   
+                                     
+                                    'group_id'=>$grupo_id ]);
 
-    }
+                                // Final
+                             if ($confirm_email == 1) {
+                                    $dato ['coupon'] = $id_coupon;					
+
+                                    CRUDBooster::sendEmail(['to'=>$email,'data'=>$dato,'template'=>'coupon','attachments'=>[]]);
+
+                               } 
+                        
+
+
+                            }
+                              //  exit();
+                            //
+                          //  CRUDBooster::redirectBack();
+                          return CRUDBooster::redirectBack("The data has been updated!", "success");
+                        }
 
     public function readCSV($csvFile, $array)
     {

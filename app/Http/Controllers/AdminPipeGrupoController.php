@@ -32,8 +32,15 @@
 			$this->col = [];
 			$this->col[] = ["label"=>"User Id","name"=>"user_id","join"=>"users,email"];
 			$this->col[] = ["label"=>"Group Id","name"=>"group_id","join"=>"group,name"];
+			$this->col[] = ["label"=>"Category","name"=>"user_id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::cate_name($row->user_id)'];
+
+ 
+			//$this->col[] = ["label"=>"category_id","name"=>"user_id","join"=>"users,id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::cate_name($row->user_id)'];
+			//$this->col[] = array("label"=>"category_id","name"=>"users.category_id","join"=>"category,name");
+
 			//$this->col[] =  array("label"=>"Nome Cognome","name"=>"user_id","join"=>"users,user_meta_id", "join"=>"user_meta,name as Dios","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::pepe($row->Dios)');
-     	 
+			$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::convert_name_surname($row->user_id)'];
+
 			$this->col[] = array("label"=>"Cupon","name"=>"user_id","join"=>"user_id,id", "join"=>"users,coupon_id","visible"=>false);
 			$this->col[] = array("label"=>"Cupon","name"=>"users.coupon_id","join"=>"coupon,name");
 			
@@ -276,7 +283,8 @@
 
 	    public function hook_query_index(&$query) {
 	        //Your code here
-	            
+	//		$query->whereBetween('category_id',array(1,3));
+
 	    }
 
 	    /*
@@ -371,7 +379,66 @@
 			//Your code here
 
 	    }
-	    //By the way, you can still create your own method in here... :) 
+		//By the way, you can still create your own method in here... :) 
+	
+		public function cate_name($linea)
+
+		{
+
+
+			//$new_linea = $linea . "Hola";
+			$id_cate = DB::table('users')->where('id', $linea)->pluck('category_id');	
+
+			$final = DB::table('category')->where('id', $id_cate)->pluck('name');	
+			$nueva = substr($final,2,-2); 
+			return $nueva; 
+		}
+
+		public function convert_name_surname($linea)
+
+		{
+
+
+			//$new_linea = $linea . "Hola";
+			$id_user = DB::table('users')->where('id', $linea)->pluck('user_meta_id');	
+		//	var_dump($id_user);
+		//	exit();
+
+			$name_en = DB::table('user_meta')->where('id', $id_user)->pluck('name');	
+			$surname_en = DB::table('user_meta')->where('id', $id_user)->pluck('surname');	
+		 
+ 
+			if (empty($name_en[0]))
+			{
+				$new_name = "";
+				$new_surname = "" ;
+			//	var_dump("Si");
+				$url = "Not found";
+			} else {
+				$new_name = Crypt::decryptString($name_en);
+				$new_surname = Crypt::decryptString($surname_en);
+				$new_linea = $new_name . ' ' . ucwords($new_surname);
+	
+				$url = strtolower($new_linea);
+				//Reemplazamos caracteres especiales latinos
+				$find = array('á','é','í','ó','ú','â','ê','î','ô','û','ã','õ','ç','ñ');
+				$repl = array('a','e','i','o','u','a','e','i','o','u','a','o','c','n');
+				$url = str_replace($find, $repl, $url);
+				//Añadimos los guiones
+				$find = array(' ', '&', '\r\n', '\n','+');
+				$url = str_replace($find, '-', $url);
+				//Eliminamos y Reemplazamos los demas caracteres especiales
+				$find = array('/[^a-z0-9\-<>]/', '/[\-]+/', '/<{^>*>/');
+				$repl = array('', '-', '');
+				$url = ucwords(preg_replace($find, $repl, $url));
+			//	var_dump($url);
+			}
+			return $url;
+	 
+ 
+ 	
+	}	
+ 
 
 
 	}
