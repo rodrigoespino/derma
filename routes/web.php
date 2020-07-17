@@ -22,6 +22,15 @@ Route :: get ('/admin/pipe_grupo/print', function ()
 
     return view ('masive',$data);
 });
+
+Route :: get ('/masive', function ()
+{
+    $data['category'] =  DB::table('category')->get();
+
+    $data['group'] =  DB::table('group')->get();
+
+    return view ('masive',$data);
+});
  
 Route :: get ('/static', function ()
 {
@@ -43,3 +52,14 @@ Route :: get ('/static', function ()
  
  Route::post('/admin/data','data@formSubmit');
  
+ Route :: get ('/notify', function ()
+ {
+     $data['users'] =  DB::table('users')->get();
+ 
+     $data['group'] =  DB::table('group')->get();
+ 
+     return view ('notify',$data);
+ });
+  
+
+ Route::post('/admin/notify','notify@formSubmit');
