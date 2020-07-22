@@ -23,67 +23,34 @@
 			$this->button_action_style = "button_icon_text";
 			$this->button_add = true;
 			$this->button_edit = true;
-			$this->button_delete = true;
+			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = true;
 			$this->button_export = true;
 			$this->table = "users";
-			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 				# START COLUMNS DO NOT REMOVE THIS LINE
 
 				$this->col = [];
-				$this->col[] = ["label"=>"Username","name"=>"username"];
-				$this->col[] = ["label"=>"Email","name"=>"email"];
-				$this->col[] = ["label"=>"Category Id","name"=>"category_id","join"=>"category,name"];
-		//		$this->col[] = ["label"=>"User Meta Id","name"=>"user_meta_id","join"=>"user_meta,name"];
-				$this->col[] = ["label"=>"Coupon Id","name"=>"coupon_id","join"=>"coupon,name"];
-		//		$this->col[] = ["label"=>"Api Token","name"=>"api_token"];
-				# END COLUMNS DO NOT REMOVE THIS LINE
+ 				$this->col[] = ["label"=>"Email","name"=>"email"];
+		 		$this->col[] = ["label"=>"Categoria","name"=>"category_id","join"=>"category,name"];
+  
 				$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_meta_id","callback_php"=>'App\Http\Controllers\AdminUser28Controller::convert_name_surname($row->user_meta_id)'];
-
-				# START FORM DO NOT REMOVE THIS LINE
-				$this->form = [];
-				$this->form[] = ['label'=>'Username','name'=>'username','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-				$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:users','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
-				$this->form[] = ['label'=>'Password','name'=>'password','type'=>'password','validation'=>'min:3|max:32','width'=>'col-sm-10','help'=>'Minimum 5 characters. Please leave empty if you did not change the password.'];
-				$this->form[] = ['label'=>'Category Id','name'=>'category_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'category,name'];
-				$this->form[] = ['label'=>'User Meta Id','name'=>'user_meta_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'user_meta,name'];
-				$this->form[] = ['label'=>'Coupon Id','name'=>'coupon_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'coupon,name'];
-			//	$this->form[] = ['label'=>'Api Token','name'=>'api_token','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//	$this->form[] = ['label'=>'Firebase Id','name'=>'firebase_id','type'=>'select2','validation'=>'required|min:1|max:255','width'=>'col-sm-10','datatable'=>'firebase,id'];
-			//	$this->form[] = ['label'=>'Remember Token','name'=>'remember_token','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//	$this->form[] = ['label'=>'Stripe Connect Id','name'=>'stripe_connect_id','type'=>'select2','validation'=>'required|min:1|max:255','width'=>'col-sm-10','datatable'=>'stripe_connect,id'];
-			//	$this->form[] = ['label'=>'Stripe Buyer Id','name'=>'stripe_buyer_id','type'=>'select2','validation'=>'required|min:1|max:255','width'=>'col-sm-10','datatable'=>'stripe_buyer,id'];
-			
-				/*
-				$this->col = [];
-				$this->col[] = ["label"=>"Email","name"=>"email"];
-
-				$this->col[] = ["label"=>"Username","name"=>"username"];
-				$this->col[] = ["label"=>"Category Id","name"=>"category_id","join"=>"category,name"];
-				//$this->col[] = ["label"=>"User Meta Id","name"=> "user_meta_id","join"=>"user_meta,name"];
-				$this->col[] = ["label"=>"Coupon List","name"=>"id","join"=>"coupon,name"];
-				$this->col[] = ["label"=>"Api Token","name"=>"api_token"];
+				$this->col[] = ["label"=>"Coupon ","name"=>"coupon_id","join"=>"coupon,name"];
  				# END COLUMNS DO NOT REMOVE THIS LINE
-
+	
 				# START FORM DO NOT REMOVE THIS LINE
 				$this->form = [];
-				$this->form[] = ['label'=>'Email','name'=>'email','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-
-				$this->form[] = ['label'=>'Username','name'=>'username','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-				$this->form[] = ['label'=>'Category Id','name'=>'category_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'category,name','datatable_where'=>'id = 2'];
-		     //	$this->form[] = ['label'=>'User Meta Id','name'=>'user_meta_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'user_meta,name'];
-				$this->form[] = ['label'=>'Coupon Id','name'=>'id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'coupon,name'];
-				$this->form[] = ['label'=>'Api Token','name'=>'api_token','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-				$this->form[] = ['label'=>'Remember Token','name'=>'remember_token','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-				# END FORM DO NOT REMOVE THIS LINE
-
-				*/
-			# OLD START FORM
+				$this->form[] = ["label"=>"Email","name"=>"email"];
+				$this->form[] = ["label"=>"Nome - Cognome","name"=>"user_meta_id","callback_php"=>'App\Http\Controllers\AdminUser28Controller::convert_name_surname($row->user_meta_id)'];
+	
+				$this->form[] = ['label'=>'Categoria','name'=>'category_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'category,name'];
+	 			$this->form[] = ['label'=>'Coupon Id','name'=>'coupon_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'coupon,name'];
+ 		 
+ 			# OLD START FORM
 			//$this->form = [];
 			//$this->form[] = ['label'=>'Username','name'=>'username','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			//$this->form[] = ['label'=>'Category Id','name'=>'category_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'category,name','datatable_where'=>'id = 1'];
@@ -124,13 +91,13 @@
 
 	    }
 
-esome class icon. e.g : fa fa-bars
-	        | @color 	   = Default is primary. (primary, warning, succecss, info)     
+ 	        | @color 	   = Default is primary. (primary, warning, succecss, info)     
 	        | @showIf 	   = If condition when action show. Use field alias. e.g : [id] == 1
 	        | 
 	        */
 			$this->addaction = array();	       
-	 
+			$this->addaction[] = ['label'=>'Aggiungi Dermatologi','url'=>CRUDBooster::mainpath('dermatologi_associati/[id]'),'icon'=>'fa fa-ban','color'=>'warning','showIf'=>"[category_id] == '3'", 'confirmation' => true];
+
 	        /* 
 	        | ---------------------------------------------------------------------- 
 	        | Add More Button Selected
@@ -278,10 +245,7 @@ esome class icon. e.g : fa fa-bars
 			$data['row_meta'] = Db::table('user_meta')->where('id',$id_meta)->first();
 			$data['row_name'] = Crypt::decryptString($data['row_meta']->name);
 			$data['row_surname'] = Crypt::decryptString($data['row_meta']->surname);
-			
-		//	var_dump($data['row_cupon']->name);
-		//	var_dump($data['row_users']->email);
-			// LOAD VIEW POST_EDIT BALDE 
+ 
   			$this->cbView('edit_info',$data); 
 	 
 		}
@@ -418,8 +382,7 @@ esome class icon. e.g : fa fa-bars
 	   ->update(array('coupon_id' => $id_coupon));
 
 
-
-	//	exit();
+ 
 
 
 

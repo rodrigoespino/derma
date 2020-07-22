@@ -9,8 +9,11 @@
 
     <div class="panel-heading">
      </div>
-    <div class="panel-body">
-     
+     <div class="panel panel-primary">
+ 
+        <div class="panel-heading"></div>
+         <div class="panel-body">
+             
         <form method="post" action="{{CRUDBooster::mainpath('add-save')}}">
             <input type="hidden" name="_token" value="{{csrf_token()}}">  
             <div class="form-group">
@@ -52,6 +55,8 @@
 
 
         <input  type="submit" name = "submit" class="btn btn-primary" value ="Modifica dermatologo">  
+        <button type="button" onclick="history.back()" class="btn btn-danger">Annulla</button>
+
     </div>
 
 </form>

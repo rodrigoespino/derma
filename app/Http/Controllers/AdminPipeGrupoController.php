@@ -4,12 +4,17 @@
 	use Request;
 	use DB;
 	use CRUDBooster;
+	use Cookie;
+
 	use Illuminate\Support\Str;
 	use Illuminate\Contracts\Encryption\DecryptException;
 	use Illuminate\Support\Facades\Crypt;
+	use App\Http\Controllers\myglobal;
+
  	class AdminPipeGrupoController extends \crocodicstudio\crudbooster\controllers\CBController {
 
 	    public function cbInit() {
+	 
 
  			$this->title_field = "id";
 			$this->limit = "20";
@@ -34,12 +39,7 @@
 			$this->col[] = ["label"=>"Group Id","name"=>"group_id","join"=>"group,name"];
 			$this->col[] = ["label"=>"Category","name"=>"user_id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::cate_name($row->user_id)'];
 
- 
-			//$this->col[] = ["label"=>"category_id","name"=>"user_id","join"=>"users,id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::cate_name($row->user_id)'];
-			//$this->col[] = array("label"=>"category_id","name"=>"users.category_id","join"=>"category,name");
-
-			//$this->col[] =  array("label"=>"Nome Cognome","name"=>"user_id","join"=>"users,user_meta_id", "join"=>"user_meta,name as Dios","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::pepe($row->Dios)');
-			$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::convert_name_surname($row->user_id)'];
+  			$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::convert_name_surname($row->user_id)'];
 
 			$this->col[] = array("label"=>"Cupon","name"=>"user_id","join"=>"user_id,id", "join"=>"users,coupon_id","visible"=>false);
 			$this->col[] = array("label"=>"Cupon","name"=>"users.coupon_id","join"=>"coupon,name");
@@ -47,24 +47,7 @@
 			$this->form = [];
 			$this->form[] = ['label'=>'User Id','name'=>'user_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'users,email'];
 			$this->form[] = ['label'=>'Group Id','name'=>'group_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'group,name'];
-			
-			/*
-			 You can try like this
-				$this->col[] = array("label"=>"Jabatan","name"=>"profil_id","join"=>"profils,jabatan_id",
-				"visible"=>false);
-				$this->col[] = array("label"=>"Jabatan","name"=>"profils.jabatan_id",
-				"join"=>"jabatan,nama_jabatan");
-…
-
-			 /*
-			# END COLUMNS DO NOT REMOVE THIS LINE
-
-			# START FORM DO NOT REMOVE THIS LINE
-			$this->form = [];
-			$this->form[] = ['label'=>'User Id','name'=>'user_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'users,email'];
-			$this->form[] = ['label'=>'Group Id','name'=>'group_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'group,name'];
-			
-			# END FORM DO NOT REMOVE THIS LINE
+	 		# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
 			//$this->form = [];
@@ -124,8 +107,7 @@
 			$this->index_button = array();
 	//		$this->index_button[] = ['label'=>'Add Masive Data',"icon"=>"fa fa-print",'name'=>'pepe'];
 
-			$this->index_button[] = ['label'=>'Add Masive Data','url'=>CRUDBooster::mainpath("print"),"icon"=>"fa fa-print"];
-
+ 
 			$this->button_selected[] = ['label'=>'Generate Cupon','icon'=>'fa fa-check','name'=>'generate_cupon'];
 
 
@@ -179,7 +161,8 @@
 	        | Include HTML Code after index table 
 	        | ---------------------------------------------------------------------- 
 	        | html code to display it after index table
-	        | $this->post_index_html = "<p>test</p>";
+	        | $this->post_index_html = "<p>test</p>use Illuminate\Http\Request;
+";
 	        |
 	        */
 	        $this->post_index_html = null;
@@ -233,41 +216,51 @@
 	    |
 	    */
 	    public function actionButtonSelected($id_selected,$button_name) {
-	        //Your code here
+		     //Your code here
 	            			//$button_name is a name that you have set at button_selected 
 			
 			if($button_name == 'generate_cupon') {
 		 
 					 
-						foreach ($id_selected as $v) {
+				foreach ($id_selected as $v) {
 
-							$users_id = Db::table('group_user')->select('user_id')->where('id', $v)->first();
-							$coupon = Db::table('users')->select('coupon_id')->where('id', $users_id->user_id)->first();
-	 
-							$token = Str::random(8); //GENERATE TOKEN
-							//print_r($token);
+					$users_id = Db::table('group_user')->select('user_id')->where('id', $v)->first();
+						$email = 	 Db::table('users')->select('email')->where('id', $users_id->user_id)->first();
+						var_dump($email);
+					//	exit();
 
-							if($coupon->coupon_id == 0) { //SI NON TROVA COUPON
+						
+						
+						$coupon = Db::table('users')->select('coupon_id')->where('id', $users_id->user_id)->first();
 
-											$dato ['coupon'] = $coupon;					
-											$id_coupon = DB::table('coupon')->insertGetId( //INSERICI COUPON
-											[ 'name' => $token ]
-										);
-										CRUDBooster::sendEmail(['to'=>$users_id->email,'data'=>$dato,'template'=>'coupon','attachments'=>[]]);
-									 		
+					$token = Str::random(8); //GENERATE TOKEN
+					//print_r($token);
+
+					if($coupon->coupon_id == 0) { //SI NON TROVA COUPON
+
+									 $id_coupon = DB::table('coupon')->insertGetId( //INSERICI COUPON
+									[ 'name' => $token ]
+								);
+								$dato ['coupon'] = $token;					
+
+								$data = [];
+								CRUDBooster::sendEmail(['to'=>'espino.rodrigo@gmail.com','data'=>$data,'template'=>'coupon','attachments'=>[]]);
+								}									 		
+	
+								// UPDATE TABLE USER ID CUPON
+					 DB::table('users')
+					 ->where('id', $users_id->user_id)
+					 ->update(array('coupon_id' => $id_coupon));
+						  
+
+				}  
+			}
+
+		 }
 			
-										// UPDATE TABLE USER ID CUPON
-							 DB::table('users')
-							 ->where('id', $users_id->user_id)
-							 ->update(array('coupon_id' => $id_coupon));
-								  
+
+
  
-						}
-					}
-
- 				}
-	    }
-
 
 	    /*
 	    | ---------------------------------------------------------------------- 
@@ -275,15 +268,13 @@
 	    | ---------------------------------------------------------------------- 
 	    | @query = current sql query 
 	    |
-		*/    
-		public function pepe($columna) {
-		 
-			exit();
- 	    }
+		 */
+		
+		 public function hook_query_index(&$query) {
+			$gruppi = Cookie::get('gruppi');
+ 
+			$query->where('group_id','=', $gruppi);
 
-	    public function hook_query_index(&$query) {
-	        //Your code here
-	//		$query->whereBetween('category_id',array(1,3));
 
 	    }
 
@@ -370,17 +361,7 @@
 
 	    }
 	 
-		public function generate_cupon()
-
-		{
-		var_dump("generate_cupon");
-		exit();
-
-			//Your code here
-
-	    }
-		//By the way, you can still create your own method in here... :) 
-	
+ 
 		public function cate_name($linea)
 
 		{

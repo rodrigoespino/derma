@@ -10,28 +10,34 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+//  use Cookie;
+
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route :: get ('/admin/pipe_grupo/print', function ()
-{
-    $data['category'] =  DB::table('category')->get();
-
-    $data['group'] =  DB::table('group')->get();
-
-    return view ('masive',$data);
-});
-
-Route :: get ('/masive', function ()
-{
-    $data['category'] =  DB::table('category')->get();
-
-    $data['group'] =  DB::table('group')->get();
-
-    return view ('masive',$data);
-});
  
+// Add CSV by Gruppi 
+// Call Form Add CVS Gruppi
+Route :: get ('/admin/group36/addcsv-gruppi/{id}', function ($id_gruppi)
+{
+ 
+    $data['group'] =  DB::table('group')->where('id',$id_gruppi)->first();
+    $data['category'] =  DB::table('category')->where('id',$data['group']->category_id)->first();
+    return view ('add_csv_gruppi',$data);
+    
+});
+
+Route :: get ('/admin/group36/view_data_group/{id}', function ($id_gruppi)
+{ 
+
+     return redirect('admin/pipe_grupo')->withCookie(cookie('gruppi', $id_gruppi, 20));
+});
+/// Post Form Gruppi
+
+Route::post('/admin/add_csv_gruppi','add_csv_gruppi@formSubmit');
+
+// Dashboard
 Route :: get ('/static', function ()
 {
     //// Statisticas     
@@ -43,16 +49,17 @@ Route :: get ('/static', function ()
     $data["derma"] = $derma_count; 
     $data["gruppi"] =     $gruppi_count;
 
-    $data["minuti"] = "11.574,56";
+    $data["minuti"] = "1122";
+    
+    //(DB::table('video_call')->where('start_date_time', '=', Carbon::today())->sum('duration')/60);
 
     $data["vistas"] = $info_count;
  
     return view ('stats', $data);
 });
  
- Route::post('/admin/data','data@formSubmit');
- 
- Route :: get ('/notify', function ()
+  
+Route :: get ('/notify', function ()
  {
      $data['users'] =  DB::table('users')->get();
  
@@ -61,5 +68,14 @@ Route :: get ('/static', function ()
      return view ('notify',$data);
  });
   
+Route::post('/admin/notify','notify@formSubmit');
 
- Route::post('/admin/notify','notify@formSubmit');
+Route :: get ('/admin/user29/dermatologi_associati/{id}', function ($id_informatore)
+{ 
+    $info = $id_informatore;
+    $data['informatore'] =  $info;
+    $data['users'] =  DB::table('users')->where('category_id','=',3)->get();
+    return view ('associati_derma',$data);
+ });
+
+ Route::post('/admin/saveassocia','saveassocia@formSubmit');

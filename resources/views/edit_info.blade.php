@@ -7,60 +7,59 @@
 </head>
 <div class="pane panel-default">
 
-    <div class="panel-heading">
-        Edit Infomatori
-    </div>
-    <div class="panel-body">
-     
-        <form method="post" action="{{CRUDBooster::mainpath('add-save')}}">
-            <input type="hidden" name="_token" value="{{csrf_token()}}">  
-            <div class="form-group">
-
-                    <label for="">Name </label> 
-                      <label for=""></label>
-                    <input required type="text" name="name" id="id" class="form-control input-sm"  required value="{{$row_name}}" >
-                  </div>
-
-                         <label for="">Surname </label> 
-                        <input required type="text" name="surname" id="surname" class="form-control input-sm" required value="{{$row_surname}}">
-                      </div>
-                      
-                        <div class="form-group">
-
-                        <label required for="">Email </label> 
-                            <input type="email" name="emilio" id="emilio" class="form-control input-sm" required value="{{$row_users->email}}"  >
-                          </div> 
   
+    <div class="panel-body">
+        <div class="panel panel-primary">
+ 
+            <div class="panel-heading"></div>
+             <div class="panel-body">
+                 
+        <form method="post" action="{{CRUDBooster::mainpath('add-save')}}">
+            <input type="hidden" name="_token" value="{{csrf_token()}}">
+              
+            <div class="form-group">
+                     <label for="">Name </label> 
+ 
+                     <input required type="text" name="name" id="id" class="form-control input-sm"  required value="{{$row_name}}" >
+                          <label for="">Surname </label> 
+ 
+                         <input required type="text" name="surname" id="surname" class="form-control input-sm" required value="{{$row_surname}}">
+                       
+ 
+                        <label   for="">Email </label> 
+ 
+                            <input type="email" name="emilio" id="emilio" class="form-control input-sm" required value="{{$row_users->email}}" disabled >
+   
+ 
+                          <label for="">Coupon </label> 
+                          <input required type="text" name="coupon" id="coupon" class="form-control input-sm"  required value="{{$row_cupon->name}}" disabled >
 
-
-     
-                    <div class="form-group">
+                     <div class="form-group">
                       <input type="hidden" name="id" id="id" value="{{$row_users->id}}" class="form-control input-sm"  >
                       <input type="hidden" name="tipo" id="tipo" value="2" class="form-control input-sm"  >
                       <input type="hidden" name="category_id" id="category_id" value="3" class="form-control input-sm"  > 
 
                       <input type="hidden" name="user_meta_id" id="user_meta_id" value="{{$row_users->user_meta_id}}" class="form-control input-sm"  >
  
-                      <input type="hidden" name="email" id="email" value="" class="form-control input-sm"  value="{{$row_users->email}}" >
+                      <input type="hidden" name="email" id="email" value="" class="form-control input-sm"  value="{{$row_users->email}}"  disabled>
                             </div>
                            <div class="form-group">
  
                              
                                     <div class="form-group">
           
-                              
-                     <label for="">Coupon </label> 
-                     <input required type="text" name="coupon" id="coupon" class="form-control input-sm"  required value="{{$row_cupon->name}}" disabled >
+                 
                    </div>
   
                    
      
     <div class="panel-footer">
 
+        <input  type="submit" name = "submit" class="btn btn-primary" value ="Modifica informatore">  
+        <button type="button" onclick="history.back()" class="btn btn-danger">Annulla</button>
 
 
-        <input  type="submit" name = "submit" class="btn btn-primary" value ="Save Dermatology">  
-    </div>
+     </div>
 
 </form>
 

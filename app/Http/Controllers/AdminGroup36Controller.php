@@ -32,16 +32,24 @@
 			$this->col = [];
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Description","name"=>"description"];
+			$this->col[] = ["label"=>"Categoria","name"=>"category_id","join"=>"category,name"];
+			$this->col[] = ["label"=>"Quantità degli utenti.","name"=>"id","callback_php"=>'App\Http\Controllers\AdminGroup36Controller::count_users($row->id)'];
+			$this->col[] = ["label"=>"Coupon","name"=>"id","callback_php"=>'App\Http\Controllers\AdminGroup36Controller::count_users($row->id)'];
+ 			$this->col[] = ["label"=>"Minuti Utilizzati","name"=>"id"];
+
+
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
 			$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|string|min:3|max:70','width'=>'col-sm-10','placeholder'=>'You can only enter the letter only'];
 			$this->form[] = ['label'=>'Description','name'=>'description','type'=>'textarea','validation'=>'required|string|min:5|max:5000','width'=>'col-sm-10'];
+			$this->form[] = ['label'=>'Categoria','name'=>'category_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'category,name'];
+
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
-			//$this->form = [];
+			//$this->form = [];4
 			//$this->form[] = ["label"=>"Name","name"=>"name","type"=>"text","required"=>TRUE,"validation"=>"required|string|min:3|max:70","placeholder"=>"You can only enter the letter only"];
 			//$this->form[] = ["label"=>"Description","name"=>"description","type"=>"textarea","required"=>TRUE,"validation"=>"required|string|min:5|max:5000"];
 			# OLD END FORM
@@ -72,8 +80,13 @@
 	        | @showIf 	   = If condition when action show. Use field alias. e.g : [id] == 1
 	        | 
 	        */
-	        $this->addaction = array();
+			$this->addaction = array();
+			
+			$this->addaction[] = ['label'=>'Aggiungi dermatologo','url'=>CRUDBooster::mainpath('addcsv-gruppi/[id]'),'icon'=>'fa fa-ban','color'=>'warning','showIf'=>"[category_id] == '1'", 'confirmation' => true];
 
+
+			$this->addaction[] = ['label'=>'Aggiungi informatori','url'=>CRUDBooster::mainpath('addcsv-gruppi/[id]'),'icon'=>'fa fa-ban','color'=>'warning','showIf'=>"[category_id] == '3'", 'confirmation' => true];
+			$this->addaction[] = ['label'=>'Vedi i dati','url'=>CRUDBooster::mainpath('view_data_group/[id]'),'icon'=>'fa fa-check','color'=>'success'];
 
 	        /* 
 	        | ---------------------------------------------------------------------- 
@@ -314,6 +327,13 @@
 	    */
 	    public function hook_after_delete($id) {
 	        //Your code here
+
+	    }
+ 	    public function count_users($id) {
+
+			 $user_count = DB::table('group_user')->where('group_id','=',$id)->count();
+
+			 return $user_count;
 
 	    }
 

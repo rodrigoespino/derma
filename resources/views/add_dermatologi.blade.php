@@ -6,13 +6,12 @@
  
 </head>
 <link rel="stylesheet" type="text/css" href="style_admin.css">
-
 <div class="pane panel-default">
-     <div class="panel-body">
-      <div class="panel panel-primary">
+    <div class="panel panel-primary">
  
         <div class="panel-heading"></div>
          <div class="panel-body">
+        
      
         <form method="post" action="{{CRUDBooster::mainpath('add-save')}}">
             <input type="hidden" name="_token" value="{{csrf_token()}}">  
@@ -38,7 +37,7 @@
 
                       <input type="hidden" name="user_meta_id" id="user_meta_id" value="1000" class="form-control input-sm"  >
                       <input type="hidden" name="email" id="email" value="" class="form-control input-sm"  >
-                      <input type="hidden" name="category_id" id="category_id" value="3" class="form-control input-sm"  >
+                      <input type="hidden" name="category_id" id="category_id" value="1" class="form-control input-sm"  >
                            </div>
                            <div class="form-group">
  
@@ -59,13 +58,19 @@
                  
 
                    <div class="form-group">
+                </div>
+            </div>
+        </div>
 
                    
      
     <div class="panel-footer">
-      <input  type="submit" name = "submit" class="btn btn-primary" value ="Aggiungi Informatore">  
-      <button type="button" onclick="history.back()" class="btn btn-danger">Annulla</button>
-   </div>
+
+
+
+        <input  type="submit" name = "submit" class="btn btn-primary" value ="Aggiungi Dermatologo">  
+        <button type="button" onclick="history.back()" class="btn btn-danger">Annulla</button>
+    </div>
 
 </form>
 
