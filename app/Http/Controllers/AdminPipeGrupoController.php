@@ -5,11 +5,12 @@
 	use DB;
 	use CRUDBooster;
 	use Cookie;
+	use App\Http\Controllers\tools;
 
 	use Illuminate\Support\Str;
 	use Illuminate\Contracts\Encryption\DecryptException;
 	use Illuminate\Support\Facades\Crypt;
-	use App\Http\Controllers\myglobal;
+	use App\Http\Controllers\test_email;
 
  	class AdminPipeGrupoController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -243,8 +244,14 @@
 								);
 								$dato ['coupon'] = $token;					
 
-								$data = [];
-								CRUDBooster::sendEmail(['to'=>'espino.rodrigo@gmail.com','data'=>$data,'template'=>'coupon','attachments'=>[]]);
+							//	$data = [];
+								var_dump($email->email);
+							//	var_dump($users_id);
+							//	var_dump($token);
+								$result = (new test_email)->sendmail($email->email,"marco","marco",$token);
+ 								exit();
+
+								//CRUDBooster::sendEmail(['to'=>'espino.rodrigo@gmail.com','data'=>$data,'template'=>'coupon','attachments'=>[]]);
 								}									 		
 	
 								// UPDATE TABLE USER ID CUPON

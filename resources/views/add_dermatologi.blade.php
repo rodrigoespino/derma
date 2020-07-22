@@ -17,11 +17,11 @@
             <input type="hidden" name="_token" value="{{csrf_token()}}">  
             <div class="form-group">
 
-                    <label for="">Name </label> 
+                    <label for="">Nome </label> 
                       <label for=""></label>
                     <input required type="text" name="name" id="id" class="form-control input-sm" required >
  
-                         <label for="">Surname </label> 
+                         <label for="">Cognome </label> 
                         <input required type="text" name="surname" id="surname" class="form-control input-sm" required>
                        
                         <div class="form-group">
@@ -49,7 +49,7 @@
                      <input required type="text" name="coupon" id="coupon" class="form-control input-sm"  required >
                    </div>
  
-                   <button type="button" class="btn btn-danger" onclick='token();'>Generate Coupon</button>
+                   <button type="button" class="btn btn-danger" onclick='token();'>Genera Codice</button>
                    <label for="">  </label> 
                     
                    <div class="margin">

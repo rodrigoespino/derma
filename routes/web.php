@@ -33,6 +33,14 @@ Route :: get ('/admin/group36/view_data_group/{id}', function ($id_gruppi)
 
      return redirect('admin/pipe_grupo')->withCookie(cookie('gruppi', $id_gruppi, 20));
 });
+
+// Dermatologi
+
+Route :: get ('/admin/user29/view_data_informatore/{id}', function ($id_info)
+{ 
+ 
+   return redirect('admin/pharmaceutical_representative_doctor40')->withCookie(cookie('id_info', $id_info, 20));
+});
 /// Post Form Gruppi
 
 Route::post('/admin/add_csv_gruppi','add_csv_gruppi@formSubmit');
@@ -53,6 +61,7 @@ Route :: get ('/static', function ()
     
     //(DB::table('video_call')->where('start_date_time', '=', Carbon::today())->sum('duration')/60);
 
+    // Dashboard Superadmim
     $data["vistas"] = $info_count;
  
     return view ('stats', $data);
@@ -79,3 +88,9 @@ Route :: get ('/admin/user29/dermatologi_associati/{id}', function ($id_informat
  });
 
  Route::post('/admin/saveassocia','saveassocia@formSubmit');
+ 
+
+
+
+ Route::get('/admin/sendemail','test_email@invia');
+ 

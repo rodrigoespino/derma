@@ -14,7 +14,7 @@
 
 
 			# START CONFIGURATION DO NOT REMOVE THIS LINE
-			$this->title_field = "Informatori";
+			$this->title_field = "Lista Informatori";
 			$this->limit = "20";
 			$this->orderby = "id,desc";
 			$this->global_privilege = true;
@@ -27,7 +27,7 @@
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
-			$this->button_import = true;
+			$this->button_import = false;
 			$this->button_export = true;
 			$this->table = "users";
 
@@ -48,7 +48,7 @@
 				$this->form[] = ["label"=>"Nome - Cognome","name"=>"user_meta_id","callback_php"=>'App\Http\Controllers\AdminUser28Controller::convert_name_surname($row->user_meta_id)'];
 	
 				$this->form[] = ['label'=>'Categoria','name'=>'category_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'category,name'];
-	 			$this->form[] = ['label'=>'Coupon Id','name'=>'coupon_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'coupon,name'];
+	 			$this->form[] = ['label'=>'Coupon','name'=>'coupon_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'coupon,name'];
  		 
  			# OLD START FORM
 			//$this->form = [];
@@ -97,6 +97,7 @@
 	        */
 			$this->addaction = array();	       
 			$this->addaction[] = ['label'=>'Aggiungi Dermatologi','url'=>CRUDBooster::mainpath('dermatologi_associati/[id]'),'icon'=>'fa fa-ban','color'=>'warning','showIf'=>"[category_id] == '3'", 'confirmation' => true];
+			$this->addaction[] = ['label'=>'Vedi i Dermatologi','url'=>CRUDBooster::mainpath('view_data_informatore/[id]'),'icon'=>'fa fa-check','color'=>'success'];
 
 	        /* 
 	        | ---------------------------------------------------------------------- 
@@ -333,8 +334,9 @@
 			->where('id', $id_meta)
 			->update(array('surname' => Crypt::encryptString(Request::get('surname'))));
 			DB::table('users')->where('email','=',"")->delete();
-			}
-			//Your code here
+			} 
+ 
+ 
 	 
 	    }
 
@@ -382,7 +384,8 @@
 	   ->update(array('coupon_id' => $id_coupon));
 
 
- 
+	   $result = (new test_email)->sendmail($emiliano,Request::get('name'),Request::get('surname'), Request::get('coupon'));
+
 
 
 

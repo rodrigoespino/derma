@@ -18,10 +18,10 @@
             <input type="hidden" name="_token" value="{{csrf_token()}}">
               
             <div class="form-group">
-                     <label for="">Name </label> 
+                     <label for="">Nome </label> 
  
                      <input required type="text" name="name" id="id" class="form-control input-sm"  required value="{{$row_name}}" >
-                          <label for="">Surname </label> 
+                          <label for="">Cognome </label> 
  
                          <input required type="text" name="surname" id="surname" class="form-control input-sm" required value="{{$row_surname}}">
                        

@@ -4,62 +4,53 @@
 	use Request;
 	use DB;
 	use CRUDBooster;
-	use Illuminate\Contracts\Encryption\DecryptException;
-	use Illuminate\Support\Facades\Crypt;
-	use App\Http\Controllers\test_email;
+	use Cookie;
 
-	class AdminUser28Controller extends \crocodicstudio\crudbooster\controllers\CBController {
+	class AdminPharmaceuticalRepresentativeDoctor40Controller extends \crocodicstudio\crudbooster\controllers\CBController {
 
 	    public function cbInit() {
-  
-
-
 
 			# START CONFIGURATION DO NOT REMOVE THIS LINE
-			$this->title_field = "Lista Dermatologi";
+			$this->title_field = "id";
 			$this->limit = "20";
 			$this->orderby = "id,desc";
-			$this->global_privilege = true;
+			$this->global_privilege = false;
 			$this->button_table_action = true;
 			$this->button_bulk_action = true;
-			$this->button_action_style = "button_icon_text";
-			$this->button_add = true;
-			$this->button_edit = true;
-			$this->button_delete = false;
-			$this->button_detail = true;
+			$this->button_action_style = "button_icon";
+			$this->button_add = false;
+			$this->button_edit = false;
+			$this->button_delete = true;
+			$this->button_detail = false;
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = false;
-			$this->button_export = true;
-			$this->table = "users";
+			$this->button_export = false;
+			$this->table = "pharmaceutical_representative_doctor";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
-				# START COLUMNS DO NOT REMOVE THIS LINE
+			$this->col = [];
+			$this->col[] = ["label"=>"Id","name"=>"user_id","join"=>"users,id","visible" => false];
+			$this->col[] = ["label"=>"Id","name"=>"doctor_id","join"=>"users,id"];
 
-				$this->col = [];
- 				$this->col[] = ["label"=>"Email","name"=>"email"];
-		 		$this->col[] = ["label"=>"Categoria","name"=>"category_id","join"=>"category,name"];
-  
-				$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_meta_id","callback_php"=>'App\Http\Controllers\AdminUser28Controller::convert_name_surname($row->user_meta_id)'];
-				$this->col[] = ["label"=>"Coupon ","name"=>"coupon_id","join"=>"coupon,name"];
- 				# END COLUMNS DO NOT REMOVE THIS LINE
-	
-				# START FORM DO NOT REMOVE THIS LINE
-				$this->form = [];
-				$this->form[] = ["label"=>"Email","name"=>"email"];
-				$this->form[] = ["label"=>"Nome - Cognome","name"=>"user_meta_id","callback_php"=>'App\Http\Controllers\AdminUser28Controller::convert_name_surname($row->user_meta_id)'];
-	
-				$this->form[] = ['label'=>'Categoria','name'=>'category_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'category,name'];
-	 			$this->form[] = ['label'=>'Coupon ','name'=>'coupon_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'coupon,name'];
- 
-				/*
- 				# END FORM DO NOT REMOVE THIS LINE
+			$this->col[] = ["label"=>"Nome - Cognome","name"=>"user_id","callback_php"=>'App\Http\Controllers\AdminPipeGrupoController::convert_name_surname($row->doctor_id)'];
 
-				*/
+			# END COLUMNS DO NOT REMOVE THIS LINE
+
+			# START FORM DO NOT REMOVE THIS LINE
+			$this->form = [];
+			$this->form[] = ['label'=>'User Id','name'=>'user_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'user,id'];
+			$this->form[] = ['label'=>'Doctor Id','name'=>'doctor_id','type'=>'select2','validation'=>'required|integer|min:0','width'=>'col-sm-10','datatable'=>'doctor,id'];
+			# END FORM DO NOT REMOVE THIS LINE
+
 			# OLD START FORM
-	 
-      		/* 
+			//$this->form = [];
+			//$this->form[] = ["label"=>"User Id","name"=>"user_id","type"=>"select2","required"=>TRUE,"validation"=>"required|integer|min:0","datatable"=>"user,id"];
+			//$this->form[] = ["label"=>"Doctor Id","name"=>"doctor_id","type"=>"select2","required"=>TRUE,"validation"=>"required|integer|min:0","datatable"=>"doctor,id"];
+			# OLD END FORM
+
+			/* 
 	        | ---------------------------------------------------------------------- 
 	        | Sub Module
 	        | ----------------------------------------------------------------------     
@@ -80,21 +71,14 @@
 	        | ----------------------------------------------------------------------     
 	        | @label       = Label of action 
 	        | @url         = Target URL, you can use field alias. e.g : [id], [name], [title], etc
-	        | @icon        = Font aw	public function getAdd()
-		{
-			//Your code here
-			$data['page_title']=  ' Add New Dermatology';
-			$this->cbView('post_add',$data); 
-
-
-
-	    }
-
- 
+	        | @icon        = Font awesome class icon. e.g : fa fa-bars
+	        | @color 	   = Default is primary. (primary, warning, succecss, info)     
+	        | @showIf 	   = If condition when action show. Use field alias. e.g : [id] == 1
 	        | 
 	        */
-			$this->addaction = array();	       
-	 
+	        $this->addaction = array();
+
+
 	        /* 
 	        | ---------------------------------------------------------------------- 
 	        | Add More Button Selected
@@ -203,7 +187,7 @@
 	        
 	        
 	        /*
-	        | -------------------------------------------------------------- -------- 
+	        | ---------------------------------------------------------------------- 
 	        | Add css style at body 
 	        | ---------------------------------------------------------------------- 
 	        | css code in the variable 
@@ -225,38 +209,6 @@
 	        $this->load_css = array();
 	        
 	        
-	    }
-
-
-		public function getEdit($id)
-		{
-
-		 
-			$data['page_title']=  'Modifica Dermatologo';
-			/// Load Database USERS
-			$data['row_users'] = Db::table('users')->where('id',$id)->first();
-			$id_meta = 	$data['row_users']->user_meta_id; // EXTRACT USER_META _ID
-			$id_cupon = $data['row_users']->coupon_id; // EXTRACT COUPON ID
-			$data['row_cupon'] = Db::table('coupon')->where('id',$id_cupon)->first(); // SEARCH NAME COUPON
-			// SEARCH DATA USER META AND DECRYPT
-			$data['row_meta'] = Db::table('user_meta')->where('id',$id_meta)->first();
-			$data['row_name'] = Crypt::decryptString($data['row_meta']->name);
-			$data['row_surname'] = Crypt::decryptString($data['row_meta']->surname);
-			
-   			$this->cbView('modifica_dermatologo',$data); 
-	 
-		}
-		
-
-		public function getAdd()
-		{
-
- 
-			$data['page_title']=  'Aggiungi Dermatologo';
-			// LOAD VIEW
-			$this->cbView('add_dermatologi',$data); 
-	 
-
 	    }
 
 
@@ -283,11 +235,12 @@
 	    */
 	    public function hook_query_index(&$query) {
 			//Your code here
-			//FILTER BY CATEGORY_ID //DERNATOLOGY
-			DB::table('users')->where('email','=',"")->delete();
+			
+			$info = Cookie::get('id_info');
+  
+			$query->where('user_id','=', $info);
 
-			$query->where('category_id','=',1);
-
+	            
 	    }
 
 	    /*
@@ -308,29 +261,8 @@
 	    |
 	    */
 	    public function hook_before_add(&$postdata) {        
-			$id_type = 	 Request::get('tipo'); //ADD O EDIT.
+	        //Your code here
 
-
-
-			// add Data
-			if($id_type =="1"){ //ADD FORM
-			// insert coupon and extract id
-	 
-		  }
- 
-		  if($id_type =="2"){ // EDIT FORM
- 			$data['row_users'] = Db::table('users')->where('id',$id)->first();
-			$id_meta =  Request::get('user_meta_id');	  // EXTRACT USER_META _ID
-			DB::table('user_meta')
-			->where('id', $id_meta)
-			->update(array('name' => Crypt::encryptString(Request::get('name'))));
-			DB::table('user_meta')
-			->where('id', $id_meta)
-			->update(array('surname' => Crypt::encryptString(Request::get('surname'))));
-			DB::table('users')->where('email','=',"emilio")->delete();
-			}
-			//Your code here
-	 
 	    }
 
 	    /* 
@@ -341,47 +273,8 @@
 	    | 
 	    */
 	    public function hook_after_add($id) {        
- 		 
-		//var_dump($id);
+	        //Your code here
 
-		$id_type = 	 Request::get('tipo'); //ADD O EDIT.
-
-
-
-			// add Data
-			if($id_type =="1"){ //ADD FORM
-			// insert coupon and extract id
-	 
-		$id_coupon = DB::table('coupon')->insertGetId(
-			[ 'name' => Request::get('coupon') ]
-		);
-		// insert encrypt data in user_meta
-		$id_user_meta = DB::table('user_meta')->insertGetId([
-			'name'=> Crypt::encryptString(Request::get('name')),
-		   'surname'=>  Crypt::encryptString(Request::get('surname'))
-	 
-	   ]);
-					
-		//extract id USERS	
-	   $last_entry_user =$id;
- 
-		 
-	   $emiliano =  Request::get('emilio');
-
-	    DB::table('users')
-	   ->where('id', $id)
-	   ->update(array('user_meta_id' => $id_user_meta));
-	   // Update Coupon_id		
-	   DB::table('users')
-	   ->where('id', $id)
-	   ->update(array('coupon_id' => $id_coupon));
-
-	   $result = (new test_email)->sendmail($emiliano,Request::get('name'),Request::get('surname'), Request::get('coupon'));
-
- 
-
-}
-	  
 	    }
 
 	    /* 
@@ -394,22 +287,19 @@
 	    */
 	    public function hook_before_edit(&$postdata,$id) {        
 	        //Your code here
- 
-			DB::table('users')->where('email','=',"")->delete();
-
 
 	    }
 
 	    /* 
-	    | ---------------------------------------------		//	var_dump($url);
-------------------------- 
+	    | ---------------------------------------------------------------------- 
 	    | Hook for execute command after edit public static function called
 	    | ----------------------------------------------------------------------     
 	    | @id       = current id 
 	    | 
 	    */
 	    public function hook_after_edit($id) {
- 
+	        //Your code here 
+
 	    }
 
 	    /* 
@@ -422,7 +312,7 @@
 	    public function hook_before_delete($id) {
 	        //Your code here
 
-	    } 
+	    }
 
 	    /* 
 	    | ---------------------------------------------------------------------- 
@@ -435,38 +325,10 @@
 	        //Your code here
 
 	    }
-		
-	    public function convert_name_surname($line)
-
-		{
 
 
- 			$name_en = DB::table('user_meta')->where('id', $line)->pluck('name');	
-			$surname_en = DB::table('user_meta')->where('id', $line)->pluck('surname');	
- 	 
- 
-		if (empty($name_en[0]))
-		{
-			$new_name = "";
-			$new_surname = "" ;
- 			$url = "Not found";
-	    } else {
-			$new_name = Crypt::decryptString($name_en);
-			$new_surname = Crypt::decryptString($surname_en);
-			$new_line = $new_name . ' ' . ucwords($new_surname);
 
-			$url = strtolower($new_line);
- 			$find = array('á','é','í','ó','ú','â','ê','î','ô','û','ã','õ','ç','ñ');
-			$repl = array('a','e','i','o','u','a','e','i','o','u','a','o','c','n');
-			$url = str_replace($find, $repl, $url);
- 			$find = array(' ', '&', '\r\n', '\n','+');
-			$url = str_replace($find, '-', $url);
- 			$find = array('/[^a-z0-9\-<>]/', '/[\-]+/', '/<{^>*>/');
-			$repl = array('', '-', '');
-			$url = ucwords(preg_replace($find, $repl, $url));
- 		}
-		return $url;
- 
+	    //By the way, you can still create your own method in here... :) 
+
+
 	}
-	
-}
